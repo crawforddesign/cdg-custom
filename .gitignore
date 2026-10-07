@@ -1,0 +1,28 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editors, IDEs and AI tooling (local only)
+.idea/
+.vscode/
+.nova/
+.claude/
+.cursor/
+*.swp
+*~
+
+# Build and release artifacts
+*.zip
+*.tar.gz
+
+# Scratch and backup files
+/_trash/
+*.bak
+*.orig
+*.log
+debug.log
+
+# Dependencies and secrets
+node_modules/
+.env
+.env.*
