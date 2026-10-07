@@ -2,7 +2,7 @@
 
 A streamlined Divi child theme focused exclusively on Divi-specific functionality. WordPress core optimizations, security hardening, and agency features are handled by the **CDG Core plugin**.
 
-## Version 2.3.1
+## Version 2.3.2
 
 ### Requirements
 
@@ -38,6 +38,7 @@ This child theme follows a separation of concerns principle:
 - Dashboard widget removal
 - Heartbeat control
 - Gutenberg optimization
+- Image optimization (WebP conversion, compression, and upload-time resizing)
 - Query optimizations
 - Image lazy loading
 - Gravity Forms / Divi fixes
@@ -129,6 +130,9 @@ View theme status at **Tools → CDG Theme Status**, which displays:
 
 ## Changelog
 
+### 2.3.2
+
+- **Fixed the child theme stylesheet loading twice.** `style.css` was being requested by Divi and again by the theme's own enqueue, because the theme enqueued its styles after Divi had already checked (priority 10). Styles now enqueue at priority 5, so Divi sees the child stylesheet is already handled and skips its own copy. No visual change; one fewer request per page.
 ### 2.3.1
 
 - **Updated CDG Core references from mu-plugin to standard plugin** — CDG Core is now installed at `/wp-content/plugins/cdg-core/` (managed via ManageWP) rather than as a must-use plugin. Updated `style.css`, `functions.php`, `class-cdg-theme.php`, and this README to reflect the new install path.

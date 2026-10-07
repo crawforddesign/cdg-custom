@@ -41,7 +41,12 @@ class CDG_Assets_Manager
   private function setup_hooks(): void
   {
     // Frontend assets.
-    add_action("wp_enqueue_scripts", [$this, "enqueue_styles"], 20);
+    //
+    // Styles run at priority 5 on purpose. Divi checks at priority 10
+    // whether the child theme already enqueued its own stylesheet and, if
+    // not, enqueues the child style.css itself. Enqueuing later than 10
+    // meant the same file loaded twice (once by Divi, once by us).
+    add_action("wp_enqueue_scripts", [$this, "enqueue_styles"], 5);
     add_action("wp_enqueue_scripts", [$this, "enqueue_scripts"], 20);
 
     // Add subfooter CSS.
