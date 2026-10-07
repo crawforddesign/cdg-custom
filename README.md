@@ -2,7 +2,7 @@
 
 A streamlined Divi child theme focused exclusively on Divi-specific functionality. WordPress core optimizations, security hardening, and agency features are handled by the **CDG Core plugin**.
 
-## Version 2.3.2
+## Version 2.4.0
 
 ### Requirements
 
@@ -65,7 +65,8 @@ cdg-custom/
 ├── inc/
 │   ├── class-cdg-theme.php           # Main theme controller
 │   ├── class-cdg-optimizations.php   # ACF Local JSON & Divi optimizations
-│   └── class-cdg-assets-manager.php  # Asset enqueueing
+│   ├── class-cdg-assets-manager.php  # Asset enqueueing
+│   └── plugin-update-checker/        # Vendored update checker (GitHub Releases)
 ├── acf-json/                         # ACF Local JSON (auto-created)
 ├── assets/
 │   ├── css/
@@ -119,6 +120,21 @@ Add a Code module with an empty `<span>` element:
 
 CDG now builds exclusively on Divi 5. The theme validates that the Divi parent theme is installed, and displays the detected Divi version on the status page for reference — no version comparison or Divi 4/5 branching logic is performed.
 
+## Updates
+
+The theme checks this repo's GitHub Releases for new versions using the same vendored [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) that CDG Core uses. When a newer release exists, the site's **Appearance > Themes** screen shows an update notice with an **Update Now** button. Sites check about every 12 hours, or right away when an admin clicks "Check again" on the Updates screen. Nothing installs on its own: auto-updates are off unless an admin turns them on for the theme.
+
+**Cutting a release:**
+
+1. Bump the `Version:` header in `style.css` (and the version at the top of this README).
+2. On GitHub, draft a new Release from `main`, tag it `vX.Y.Z` to match, add a changelog, and publish. No zip needs to be attached. The checker falls back to GitHub's own source zip for the tag, and WordPress renames the extracted folder to `cdg-custom`.
+
+**Good to know:**
+
+- A site only starts checking once it runs a version that includes the checker (2.4.0 or later). Sites on an older theme version need one manual update first.
+- If CDG Core is also active, both bundle the same library. WordPress loads one copy and both use it.
+- Tagging is flexible: a tag that isn't a version number (like the existing `Aug2026` release) still works, because the checker reads the version from `style.css` at that tag. A `vX.Y.Z` tag is clearer.
+
 ## Admin Status Page
 
 View theme status at **Tools → CDG Theme Status**, which displays:
@@ -129,6 +145,10 @@ View theme status at **Tools → CDG Theme Status**, which displays:
 - CDG Core plugin status
 
 ## Changelog
+
+### 2.4.0
+
+- **Automatic update checks via GitHub Releases.** The theme now bundles the Plugin Update Checker (`inc/plugin-update-checker/`) and points it at `crawforddesign/cdg-custom`. Publishing a release makes an "Update available" notice and an **Update Now** button appear on the Themes screen of every site running 2.4.0 or later. Auto-updates stay off, so nothing installs without a click. The checker is created on `init` rather than at file load, which avoids a one-time "translation loaded too early" notice that Gravity Forms logs under `WP_DEBUG` when the checker schedules its first background check. Tested end to end: an old version was offered the release, and a real update installed with the folder renamed to `cdg-custom`.
 
 ### 2.3.2
 
