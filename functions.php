@@ -21,6 +21,44 @@ if (!defined("ABSPATH")) {
 define("CDG_THEME_VERSION", wp_get_theme()->get("Version"));
 
 /**
+ * Automatic updates (GitHub Releases)
+ *
+ * CDG Custom isn't on wordpress.org, so WordPress can't know a new version
+ * exists unless something tells it. This points the vendored Plugin Update
+ * Checker (inc/plugin-update-checker/) at the crawforddesign/cdg-custom
+ * repo's Releases. Publish a release tagged like "v2.4.0" (matching the
+ * Version header in style.css) and installed sites show a normal "Update
+ * available" notice with an "Update Now" button on the Themes screen.
+ *
+ * Auto-updates are intentionally left off: this only makes the notice and
+ * button appear. Nothing installs without a click.
+ *
+ * The checker runs on every request type (admin, cron, WP-CLI) so update
+ * checks fire on WordPress's normal schedule. The same library is bundled
+ * in the CDG Core plugin; the library keeps the newest copy when several
+ * are loaded, so the two don't conflict.
+ */
+require_once get_stylesheet_directory() .
+  "/inc/plugin-update-checker/plugin-update-checker.php";
+
+// Built on "init", not at file load. The checker schedules its background
+// task the first time it runs, and doing that before init makes other
+// plugins' cron schedule labels (Gravity Forms') load translations too
+// early, which logs a notice under WP_DEBUG. The object is kept in
+// $GLOBALS so it stays reachable from any context (including WP-CLI).
+add_action(
+  "init",
+  function (): void {
+    $GLOBALS["cdg_custom_update_checker"] = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+      "https://github.com/crawforddesign/cdg-custom/",
+      get_stylesheet_directory() . "/functions.php",
+      "cdg-custom"
+    );
+  },
+  0
+);
+
+/**
  * Load theme classes explicitly.
  *
  * Replaces spl_autoload_register to avoid filesystem checks on every
